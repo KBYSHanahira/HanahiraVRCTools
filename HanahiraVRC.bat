@@ -529,9 +529,6 @@ function Get-JunkTargets {
         [pscustomobject]@{ Name = 'Windows temp files';    Path = (Join-Path $env:windir 'Temp');                     Admin = $true;  AgeHours = 24; Filter = $null }
         [pscustomobject]@{ Name = 'Crash dumps';           Path = (Join-Path $la 'CrashDumps');                       Admin = $false; AgeHours = 0;  Filter = $null }
         [pscustomobject]@{ Name = 'Error reports (WER)';   Path = (Join-Path $la 'Microsoft\Windows\WER');            Admin = $false; AgeHours = 0;  Filter = $null }
-        [pscustomobject]@{ Name = 'DirectX shader cache';  Path = (Join-Path $la 'D3DSCache');                        Admin = $false; AgeHours = 0;  Filter = $null }
-        [pscustomobject]@{ Name = 'NVIDIA DX cache';       Path = (Join-Path $la 'NVIDIA\DXCache');                   Admin = $false; AgeHours = 0;  Filter = $null }
-        [pscustomobject]@{ Name = 'NVIDIA GL cache';       Path = (Join-Path $la 'NVIDIA\GLCache');                   Admin = $false; AgeHours = 0;  Filter = $null }
         [pscustomobject]@{ Name = 'Explorer thumbnails';   Path = (Join-Path $la 'Microsoft\Windows\Explorer');      Admin = $false; AgeHours = 0;  Filter = 'thumbcache_*.db' }
     )
 }
@@ -554,7 +551,8 @@ function Get-RecycleBinMB {
 
 function Do-Junk {
     Show-Banner; Show-Title 'JUNK  Clean temporary files'
-    Info 'Only temp files, caches and crash dumps are touched - never your documents.'
+    Info 'Only temp files, thumbnails and crash dumps are touched - never your documents.'
+    Info 'Shader caches (NVIDIA / DirectX) are kept on purpose so games do not recompile shaders.'
     Info 'Temp files changed in the last 24 hours are skipped. Close other programs first for best results.'
     Write-Host ''
     Show-Progress 'Scanning...'
@@ -646,7 +644,7 @@ function Show-Menu {
         (Cell 'A' 'BACKUP'  'Back up VRChat settings'),
         (Cell 'B' 'RESET'   'Reset VRChat settings'),
         (Cell 'C' 'FOLDERS' 'Open data / cache / logs'),
-        (Cell 'J' 'JUNK'    'Clean temp files & caches'),
+        (Cell 'J' 'JUNK'    'Clean temp files & crash dumps'),
         '',
         (Head 'SHORTCUTS'),
         (Cell 'D' 'LAUNCH'  'Start VRChat (VR / Desktop)'),

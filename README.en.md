@@ -39,7 +39,7 @@
 - 🎮 **Game problems** — stop stuck processes, clear cache, repair Easy Anti-Cheat, verify game files, reset OSC
 - 💬 **Discord / IME** — work around DiscordHook crashes, diagnose Japanese input not working
 - 🌐 **Network & audio** — check VRChat server status, reset DNS / Winsock, restart Windows audio
-- 🧹 **PC cleanup** — remove temp files, crash dumps and shader caches, with a size preview first
+- 🧹 **PC cleanup** — remove temp files and crash dumps, with a size preview first
 - 🛡️ **Safe by design** — asks before deleting or changing anything; settings resets are always backed up first
 - 📦 **One file** — no installer. Just double-click `HanahiraVRC.bat`
 
@@ -184,7 +184,7 @@ Items marked with `*` (**NET** and **AUDIO**) need Administrator rights.
 
 | Key | Name | What it does | Notes |
 |---|---|---|---|
-| `J` | **JUNK** | Removes temp files, crash dumps, error reports, shader caches (DirectX / NVIDIA) and thumbnail caches | **Shows the list and sizes first and asks before deleting.** Temp files from the last 24 hours are skipped. Emptying the Recycle Bin is a separate question. Cleaning the Windows temp folder needs Administrator |
+| `J` | **JUNK** | Removes temp files, crash dumps, error reports and thumbnail caches (**shader caches for NVIDIA / DirectX are left alone on purpose, so games do not have to recompile them**) | **Shows the list and sizes first and asks before deleting.** Temp files from the last 24 hours are skipped. Emptying the Recycle Bin is a separate question. Cleaning the Windows temp folder needs Administrator |
 
 </details>
 
