@@ -35,3 +35,7 @@ Logs go to `Logs\HanahiraVRC.log` and registry backups to `Backups\`, next to th
 - Destructive actions ask for confirmation; nothing touches your documents.
 - The `.bat` is a small launcher; the tool itself is PowerShell embedded in the same file.
 - Keep the file saved with **CRLF** line endings (enforced by `.gitattributes`) or `cmd.exe` will misread it.
+
+## License
+
+[MIT](LICENSE)
