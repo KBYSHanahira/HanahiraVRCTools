@@ -88,7 +88,7 @@ Just **press the key** shown on the left of each menu item (`1`, `2`, `F`, ...).
 
 ### Step 5 | When you need Administrator rights
 
-Items marked with `◆` (**NET** and **AUDIO**) need Administrator rights.
+Items marked with `*` (**NET** and **AUDIO**) need Administrator rights.
 
 - Press **`R`** in the menu to relaunch as Administrator
 - Or right-click `HanahiraVRC.bat` → **Run as administrator**
@@ -105,7 +105,7 @@ Items marked with `◆` (**NET** and **AUDIO**) need Administrator rights.
 |---|---|
 | 🟧 Orange block `1`, `F`, ... | The key to press |
 | Top box | Whether VRChat is running, your rights, free space on drive C |
-| `◆` | Needs Administrator rights |
+| `*` | Needs Administrator rights |
 | `✔` / `▲` / `✖` | Success / warning / failure |
 | `[Y/N]` | `Y` to continue, `N` to cancel |
 

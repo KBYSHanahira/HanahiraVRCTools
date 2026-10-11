@@ -88,9 +88,9 @@ function Wait-Key {
 # ---------- output helpers ----------
 function Log($msg) { Add-Content -Path $LogFile -Value ("[{0}] {1}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $msg) -Encoding UTF8 }
 function Ok($t)   { Write-Host "  ${GRN}✔${R} $t" }
-function Warn($t) { Write-Host "  ${YEL}▲${R} $t" }
+function Warn($t) { Write-Host "  ${YEL}!${R} $t" }
 function Err($t)  { Write-Host "  ${RED}✖${R} $t" }
-function Info($t) { Write-Host "  ${SKY}•${R} ${DIM}$t${R}" }
+function Info($t) { Write-Host "  ${SKY}-${R} ${DIM}$t${R}" }
 
 function Show-Banner {
     Write-Host -NoNewline "${BG}${E}[2J${E}[3J${E}[H"
@@ -104,7 +104,7 @@ function Show-Banner {
     )
     Write-Host ''
     for ($i = 0; $i -lt $art.Count; $i++) { Write-Host ("  {0}{1}{2}{3}" -f $BOLD, $Grad[$i], $art[$i], $R) }
-    Write-Host ("  {0}{1}{2} VRC FIX TOOLKIT {3}  {4}v{5}  ·  squash VRChat bugs in one click{3}" -f $BGO, $BLK, $BOLD, $R, $DIM, $Ver)
+    Write-Host ("  {0}{1}{2} VRC FIX TOOLKIT {3}  {4}v{5}  |  squash VRChat bugs in one click{3}" -f $BGO, $BLK, $BOLD, $R, $DIM, $Ver)
     Write-Host $Rule
 }
 
@@ -566,7 +566,7 @@ function Do-Junk {
         $files = Get-JunkFiles $tg
         $mb = [double](($files | Measure-Object Length -Sum).Sum / 1MB)
         $total += $mb
-        Write-Host ("  {0}•{1} {2,-22} {3}{4,9:N1} MB{1}  {5}{6} files{1}" -f $SKY, $R, $tg.Name, $WHT, $mb, $DIM, $files.Count)
+        Write-Host ("  {0}-{1} {2,-22} {3}{4,9:N1} MB{1}  {5}{6} files{1}" -f $SKY, $R, $tg.Name, $WHT, $mb, $DIM, $files.Count)
         if ($files.Count -gt 0) { $plan += [pscustomobject]@{ Target = $tg; Files = $files } }
     }
     Write-Host ''
@@ -603,14 +603,14 @@ function VLen($s) { ($s -replace "$([char]27)\[[0-9;]*m", '').Length }
 function Pad-V($s, $w) { $n = $w - (VLen $s); if ($n -gt 0) { $s + (' ' * $n) } else { $s } }
 
 function Cell($key, $tag, $desc, $admin = $false) {
-    $mark = if ($admin) { "${YEL}◆${R} " } else { '  ' }
+    $mark = if ($admin) { "${YEL}*${R} " } else { '  ' }
     "${BGO}${BLK}${BOLD} $key ${R} ${BOLD}${WHT}$($tag.PadRight(8))${R} $mark${DIM}$desc${R}"
 }
 function Head($t) { "${VIOLET}${BOLD}$t${R} ${DIM}$('─' * [Math]::Max(2, 46 - $t.Length))${R}" }
 
 function Show-StatusBox {
-    $run = if (Test-VrcRunning) { "${GRN}● running${R}" } else { "${DIM}○ not running${R}" }
-    $adm = if ($IsAdmin) { "${GRN}● Administrator${R}" } else { "${DIM}○ standard user${R}" }
+    $run = if (Test-VrcRunning) { "${GRN}RUNNING${R}" } else { "${DIM}not running${R}" }
+    $adm = if ($IsAdmin) { "${GRN}Administrator${R}" } else { "${DIM}standard user${R}" }
     $free = ''
     try { $free = '{0:N0} GB free' -f ((Get-PSDrive -Name ($env:SystemDrive.TrimEnd(':'))).Free / 1GB) } catch {}
     $inner = $RuleW - 2
@@ -669,7 +669,7 @@ function Show-Menu {
         foreach ($x in $right) { Write-Host ('  ' + $x) }
     }
     Write-Host ''
-    Write-Host "  ${YEL}◆${R} ${DIM}needs Administrator   ·   press a key to choose${R}"
+    Write-Host "  ${YEL}*${R} ${DIM}needs Administrator   -   press a key to choose${R}"
     Write-Host $Rule
     Write-Host -NoNewline "  ${PINK}❯${R} "
 }
@@ -694,5 +694,5 @@ try {
 }
 Log '---- session end ----'
 Write-Host ''
-Write-Host "  $($Grad[3])Have fun in VRChat!  ◆  Hanahira${E}[0m"
+Write-Host "  $($Grad[3])Have fun in VRChat!  ✿  Hanahira${E}[0m"
 Write-Host ''
