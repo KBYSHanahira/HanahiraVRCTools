@@ -594,6 +594,39 @@ function Do-Junk {
     } else { Info 'Recycle Bin is empty.' }
 }
 
+function Do-Shader {
+    Show-Banner; Show-Title 'SHADER  Clear GPU shader caches'
+    Warn 'Shader caches keep games smooth. Deleting them makes every game rebuild its shaders.'
+    Info 'Expect stutter and longer loading until they are rebuilt. Use this only for graphics glitches or after a GPU driver problem.'
+    Write-Host ''
+    Show-Progress 'Scanning...'
+    Write-Host ''
+    $la = $env:LOCALAPPDATA
+    $targets = @(
+        [pscustomobject]@{ Name = 'NVIDIA DX cache';      Path = (Join-Path $la 'NVIDIA\DXCache'); AgeHours = 0; Filter = $null }
+        [pscustomobject]@{ Name = 'NVIDIA GL cache';      Path = (Join-Path $la 'NVIDIA\GLCache'); AgeHours = 0; Filter = $null }
+        [pscustomobject]@{ Name = 'DirectX shader cache'; Path = (Join-Path $la 'D3DSCache');      AgeHours = 0; Filter = $null }
+    )
+    $plan = @(); $total = 0.0
+    foreach ($tg in $targets) {
+        $files = Get-JunkFiles $tg
+        $mb = [double](($files | Measure-Object Length -Sum).Sum / 1MB)
+        $total += $mb
+        Write-Host ("  {0}-{1} {2,-22} {3}{4,9:N1} MB{1}  {5}{6} files{1}" -f $SKY, $R, $tg.Name, $WHT, $mb, $DIM, $files.Count)
+        if ($files.Count -gt 0) { $plan += [pscustomobject]@{ Target = $tg; Files = $files } }
+    }
+    Write-Host ''
+    Write-Host ("  {0}Total: {1:N1} MB{2}" -f $BOLD, $total, $R)
+    Write-Host ''
+    if ($plan.Count -eq 0) { Ok 'No shader caches found.'; return }
+    if (Test-VrcRunning) { Warn 'VRChat is running - close it first for a full clean.' }
+    if (-not (Confirm-Yes 'Delete these shader caches? (games will rebuild them)')) { Warn 'Cancelled.'; return }
+    Show-Progress 'Clearing shader caches...'
+    foreach ($p in $plan) { $p.Files | Remove-Item -Force -ErrorAction SilentlyContinue }
+    Ok ('Shader caches cleared ({0:N0} MB scanned). Games will rebuild them as you play.' -f $total)
+    Log ("shader caches cleared: {0:N0} MB" -f $total)
+}
+
 # ============================================================
 #  MENU
 # ============================================================
@@ -645,6 +678,7 @@ function Show-Menu {
         (Cell 'B' 'RESET'   'Reset VRChat settings'),
         (Cell 'C' 'FOLDERS' 'Open data / cache / logs'),
         (Cell 'J' 'JUNK'    'Clean temp files & crash dumps'),
+        (Cell 'G' 'SHADER'  'Clear GPU shader cache'),
         '',
         (Head 'SHORTCUTS'),
         (Cell 'D' 'LAUNCH'  'Start VRChat (VR / Desktop)'),
@@ -672,7 +706,7 @@ function Show-Menu {
     Write-Host -NoNewline "  ${PINK}❯${R} "
 }
 Log "---- session start v$Ver admin=$IsAdmin ----"
-$valid = @('1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','I','J','S','R','X')
+$valid = @('1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','I','J','S','R','X')
 try {
     while ($true) {
         Show-Menu
@@ -683,7 +717,7 @@ try {
             '1' { Do-Kill }    '2' { Do-Cache }   '3' { Do-Eac }     '4' { Do-Verify }  '5' { Do-Osc }
             '6' { Do-Net }     '7' { Do-Diag }    '8' { Do-Audio }   '9' { Do-Logs }
             'A' { Do-Backup }  'B' { Do-Reset }   'C' { Do-Folders } 'D' { Do-Launch }  'E' { Do-AutoFix }
-            'F' { Do-Discord } 'I' { Do-Ime }     'J' { Do-Junk }    'S' { Do-Steam }   'R' { if (-not $IsAdmin) { Do-Admin } }
+            'F' { Do-Discord } 'I' { Do-Ime }     'G' { Do-Shader }  'J' { Do-Junk }    'S' { Do-Steam }   'R' { if (-not $IsAdmin) { Do-Admin } }
         }
         Wait-Key
     }

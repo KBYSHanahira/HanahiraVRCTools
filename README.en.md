@@ -125,6 +125,7 @@ Items marked with `*` (**NET** and **AUDIO**) need Administrator rights.
 | Cannot type Japanese | **`I` IME** |
 | VRChat crashes or freezes while Discord is open | **`F` DISCORD** |
 | OSC apps stopped responding | **`5` OSC** |
+| Graphics glitches / problems after a GPU driver update | **`G` SHADER** (last resort) |
 | Settings look wrong (graphics / volume will not stick) | **`A` BACKUP** → **`B` RESET** |
 | Whole PC feels slow / low disk space | **`J` JUNK** |
 | Just fix everything at once | **`E` AUTOFIX** |
@@ -185,6 +186,7 @@ Items marked with `*` (**NET** and **AUDIO**) need Administrator rights.
 | Key | Name | What it does | Notes |
 |---|---|---|---|
 | `J` | **JUNK** | Removes temp files, crash dumps, error reports and thumbnail caches (**shader caches for NVIDIA / DirectX are left alone on purpose, so games do not have to recompile them**) | **Shows the list and sizes first and asks before deleting.** Temp files from the last 24 hours are skipped. Emptying the Recycle Bin is a separate question. Cleaning the Windows temp folder needs Administrator |
+| `G` | **SHADER** | Deletes NVIDIA / DirectX shader caches | ⚠️ **Games must recompile shaders, so expect stutter and slower loading for a while.** Use only for graphics glitches or GPU driver problems. Asks before deleting |
 
 </details>
 
