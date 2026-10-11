@@ -28,9 +28,10 @@
 4. [Find a fix by symptom](#-find-a-fix-by-symptom)
 5. [Tool reference](#-tool-reference)
 6. [FAQ](#-faq)
-7. [Safety and privacy](#-safety-and-privacy)
-8. [Uninstall](#-uninstall)
-9. [Developer notes](#-developer-notes)
+7. [OSC Chatbox Stats](#-osc-chatbox-stats) (optional extra)
+8. [Safety and privacy](#-safety-and-privacy)
+9. [Uninstall](#-uninstall)
+10. [Developer notes](#-developer-notes)
 
 ---
 
@@ -265,6 +266,30 @@ It was already cleared or is empty. Press `7` (DIAG) to see the current size.
 4. If you use ATOK or another IME, switch to Microsoft IME and test again
 
 </details>
+
+---
+
+## 📊 OSC Chatbox Stats
+
+`OscStats.bat` is an optional extra: it shows your PC's live stats in the VRChat Chatbox over OSC.
+
+```
+◆ FPS 603
+CPU 9800X3D 37% ◆◆◇◇◇
+RAM 10.0/31G ◆◆◇◇◇
+GPU RTX 5070 53% ◆◆◆◇◇
+VRAM 4.0/12G ◆◆◇◇◇
+```
+
+1. In VRChat, turn on **Action Menu → Options → OSC → Enabled**
+2. Double-click `OscStats.bat` and leave the window open (`Ctrl+C` to stop)
+3. **For the FPS line (optional):** download `PresentMon-*-x64.exe` from the [official PresentMon releases](https://github.com/GameTechDev/PresentMon/releases), rename it to `PresentMon.exe`, put it next to `OscStats.bat`, and run `OscStats.bat` **as Administrator**. Without it, the CPU / RAM / GPU / VRAM lines still work
+
+- Sends to `127.0.0.1:9000` only (your own PC). It updates every 2 seconds because VRChat rate-limits the Chatbox
+- GPU data comes from `nvidia-smi` (NVIDIA). On AMD / Intel it falls back to the Windows GPU counters and has no VRAM line
+- If PresentMon stops or stalls, it is killed and restarted automatically (retry delay 5 s → 60 s)
+- The FPS is the rate at which VRChat presents frames, so it can differ from another overlay's number, and in VR from what the headset shows. Set `OSC_DEBUG=1` before launching to write raw samples to `Logs\osc_debug.txt`
+- If a bar symbol shows as an empty box in VRChat, change `$BarOn` / `$BarOff` at the top of the script
 
 ---
 
