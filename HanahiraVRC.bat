@@ -246,6 +246,32 @@ function Do-Eac {
     Log 'EAC setup launched'
 }
 
+function Do-Ace {
+    Show-Banner; Show-Title 'ACE  Close ACE-BASE (Tencent Anti-Cheat Expert)'
+    $pat = '^(ACE-|AntiCheatExpert|SGuard)'
+    $procs = @(Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -match $pat })
+    $svcs  = @(Get-CimInstance Win32_Service -ErrorAction SilentlyContinue | Where-Object { $_.Name -match $pat -and $_.State -eq 'Running' })
+    $drvs  = @(Get-CimInstance Win32_SystemDriver -ErrorAction SilentlyContinue | Where-Object { $_.Name -match $pat -and $_.State -eq 'Running' })
+    if ($procs.Count -eq 0 -and $svcs.Count -eq 0 -and $drvs.Count -eq 0) { Ok 'ACE-BASE is not running.'; Info 'If VRChat still reports it, close the Tencent game / launcher that installed it, then try again.'; return }
+    foreach ($p in $procs) { Info "Process: $($p.ProcessName) (PID $($p.Id))" }
+    foreach ($s in $svcs)  { Info "Service: $($s.Name)" }
+    foreach ($d in $drvs)  { Info "Driver:  $($d.Name)" }
+    if (-not (Need-Admin)) { return }
+    if (-not (Confirm-Yes 'Stop these ACE processes / services / drivers?')) { Info 'Cancelled.'; return }
+    foreach ($p in $procs) { try { Stop-Process -Id $p.Id -Force -ErrorAction Stop; Ok "Stopped process: $($p.ProcessName)" } catch { Warn "Could not stop $($p.ProcessName): $($_.Exception.Message)" } }
+    foreach ($s in $svcs)  { & sc.exe stop $s.Name | Out-Null; Start-Sleep -Milliseconds 500; if ((Get-Service -Name $s.Name -ErrorAction SilentlyContinue).Status -eq 'Stopped') { Ok "Stopped service: $($s.Name)" } else { Warn "Could not stop service: $($s.Name)" } }
+    $stuck = @()
+    foreach ($d in $drvs)  {
+        & sc.exe stop $d.Name | Out-Null; Start-Sleep -Milliseconds 800
+        $st = (Get-CimInstance Win32_SystemDriver -Filter "Name='$($d.Name)'" -ErrorAction SilentlyContinue).State
+        if ($st -eq 'Stopped') { Ok "Unloaded driver: $($d.Name)" } else { Warn "Driver $($d.Name) did not unload (state: $st)."; $stuck += $d.Name }
+    }
+    Log "ace stop procs=$($procs.Count) svcs=$($svcs.Count) drvs=$($drvs.Count) stuck=$($stuck.Count)"
+    if ($stuck.Count -gt 0) {
+        Info 'This driver cannot be unloaded while Windows is running. Restart the PC.'
+        Info 'It starts on demand (Manual), so it stays off after reboot unless a Tencent game is opened first.'
+    } else { Ok 'ACE is closed. Start VRChat now.' }
+}
 function Do-Verify {
     Show-Banner; Show-Title 'VERIFY  Verify game files'
     Show-Progress 'Asking Steam...'
@@ -665,6 +691,7 @@ function Show-Menu {
         (Cell '5' 'OSC'     'Reset OSC configs'),
         (Cell 'F' 'DISCORD' 'Disable DiscordHook (crashes)'),
         (Cell 'I' 'IME'     'Fix Japanese IME input'),
+        (Cell 'K' 'ACE'     'Close ACE-BASE (startup error)' $true),
         '',
         (Head 'NETWORK & AUDIO'),
         (Cell '6' 'NET'     'Flush DNS + reset Winsock' $true),
@@ -706,7 +733,7 @@ function Show-Menu {
     Write-Host -NoNewline "  ${PINK}❯${R} "
 }
 Log "---- session start v$Ver admin=$IsAdmin ----"
-$valid = @('1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','I','J','S','R','X')
+$valid = @('1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','I','J','K','S','R','X')
 try {
     while ($true) {
         Show-Menu
@@ -717,7 +744,7 @@ try {
             '1' { Do-Kill }    '2' { Do-Cache }   '3' { Do-Eac }     '4' { Do-Verify }  '5' { Do-Osc }
             '6' { Do-Net }     '7' { Do-Diag }    '8' { Do-Audio }   '9' { Do-Logs }
             'A' { Do-Backup }  'B' { Do-Reset }   'C' { Do-Folders } 'D' { Do-Launch }  'E' { Do-AutoFix }
-            'F' { Do-Discord } 'I' { Do-Ime }     'G' { Do-Shader }  'J' { Do-Junk }    'S' { Do-Steam }   'R' { if (-not $IsAdmin) { Do-Admin } }
+            'F' { Do-Discord } 'I' { Do-Ime }     'K' { Do-Ace }     'G' { Do-Shader }  'J' { Do-Junk }    'S' { Do-Steam }   'R' { if (-not $IsAdmin) { Do-Admin } }
         }
         Wait-Key
     }
@@ -727,4 +754,4 @@ try {
 Log '---- session end ----'
 Write-Host ''
 Write-Host "  $($Grad[3])Have fun in VRChat!  ✿  Hanahira${E}[0m"
-Write-Host ''
+Write-Host ''
