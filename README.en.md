@@ -124,6 +124,7 @@ Items marked with `*` (**NET** and **AUDIO**) need Administrator rights.
 | Cannot log in / API errors / unstable connection | **`7` DIAG** to check → **`6` NET** |
 | Mic not working / no sound | **`8` AUDIO** |
 | Cannot type Japanese | **`I` IME** |
+| Startup error "Close ACE-BASE before starting the game" | **`K` ACE** (run as Administrator) |
 | VRChat crashes or freezes while Discord is open | **`F` DISCORD** |
 | OSC apps stopped responding | **`5` OSC** |
 | Graphics glitches / problems after a GPU driver update | **`G` SHADER** (last resort) |
@@ -145,6 +146,7 @@ Items marked with `*` (**NET** and **AUDIO**) need Administrator rights.
 | `3` | **EAC** | Repairs Easy Anti-Cheat. Finds the game across all Steam libraries and launches the EAC setup | In the window, **pick VRChat and click "Repair Service"** |
 | `4` | **VERIFY** | Asks Steam to verify the game files | Progress shows in the Steam window |
 | `5` | **OSC** | Resets per-avatar OSC configs | The game recreates them on next launch |
+| `K` | **ACE** | Stops the **ACE-BASE** driver (Tencent Anti-Cheat Expert). Needs Administrator and asks first | For the startup error "Close ACE-BASE before starting the game". If it cannot be unloaded, restart the PC (it is not loaded after a reboot unless a Tencent game is started first) |
 
 </details>
 
@@ -303,6 +305,7 @@ VRAM 4.0/12G ◆◆◇◇◇
   - **F DISCORD**: renames Discord's `DiscordHook*.dll` to `.disabled` (reversible)
   - **I IME**: only if needed, sets the default input method to the Japanese IME
   - **6 NET**: resets Winsock (restart required)
+  - **K ACE**: stops Tencent anti-cheat drivers / services such as ACE-BASE (they come back after a restart)
 
 ---
 
